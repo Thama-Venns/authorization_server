@@ -1,5 +1,7 @@
 package com.ntvspace.security.usecure.Controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,13 +12,21 @@ import java.security.Principal;
 @RequestMapping("/")
 public class HomeController {
 
-//    @GetMapping
-//    public String home() {
-//        return "Welcome home";
-//    }
+    @GetMapping("admin")
+    public String Admin() {
+        return "Admin resource";
+    }
+
+    @GetMapping("test")
+    public String Test() {
+        return "Test resource";
+    }
 
     @GetMapping
-    public Principal GetPrincipal(Principal principal) {
-        return principal;
+    public ResponseEntity GetPrincipal(Principal principal) {
+        if(principal == null)
+            return ResponseEntity.status(HttpStatus.CONTINUE).body("http://localhost:8080/login");
+
+        return ResponseEntity.ok(principal);
     }
 }

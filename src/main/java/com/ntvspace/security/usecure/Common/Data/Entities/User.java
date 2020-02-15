@@ -16,6 +16,7 @@ import java.util.*;
 
 @Data
 @Entity
+@Table(name = "`User`")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,18 +36,13 @@ public class User implements UserDetails {
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
     private boolean enabled = true;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Role> roles = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        roles.forEach(x -> grantedAuthorities.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return x.getNAME();
-            }
-        }));
+        roles.forEach(x -> grantedAuthorities.add((GrantedAuthority) () -> x.getName()));
 
         return grantedAuthorities;
     }
