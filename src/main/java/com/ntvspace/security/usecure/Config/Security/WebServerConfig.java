@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 
 @Configuration
 @EnableWebSecurity
-@EnableResourceServer
+//@EnableResourceServer
 public class WebServerConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired private UserDetailsService _userDetailsService;
@@ -28,9 +28,9 @@ public class WebServerConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeRequests()
+                .antMatchers("/register").permitAll()
             .antMatchers("/oauth/token").permitAll()
             .antMatchers("/auth").permitAll()
-            .antMatchers("/register").permitAll()
             .anyRequest().authenticated()
             .and().formLogin();
     }
