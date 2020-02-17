@@ -10,11 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 @Configuration
 @EnableWebSecurity
-//@EnableResourceServer
 public class WebServerConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired private UserDetailsService _userDetailsService;
@@ -28,9 +26,8 @@ public class WebServerConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeRequests()
-                .antMatchers("/register").permitAll()
-            .antMatchers("/oauth/token").permitAll()
-            .antMatchers("/auth").permitAll()
+            .antMatchers("/users**").hasAnyRole("USER", "ADMIN")
+            .antMatchers("/test", "/register").permitAll()
             .anyRequest().authenticated()
             .and().formLogin();
     }

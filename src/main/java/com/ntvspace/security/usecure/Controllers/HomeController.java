@@ -24,9 +24,6 @@ public class HomeController {
 
     @GetMapping
     public ResponseEntity GetPrincipal(Principal principal) {
-        if(principal == null)
-            return ResponseEntity.status(HttpStatus.CONTINUE).body("http://localhost:8080/login");
-
         return ResponseEntity.ok(principal);
     }
 }

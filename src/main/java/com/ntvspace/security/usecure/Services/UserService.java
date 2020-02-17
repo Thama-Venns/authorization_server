@@ -29,10 +29,16 @@ public class UserService implements UserDetailsService {
     @Autowired private BCryptPasswordEncoder _passwordEncoder;
     private Validator _validator = new Validator();
 
-    //Load user for authentication
+    /**Load user for authentication
+     * @param uniqueName : Can be the user email or username
+     * @return user
+     * @throws UsernameNotFoundException
+     */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = _userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public UserDetails loadUserByUsername(String uniqueName) throws UsernameNotFoundException {
+        User user = _userRepository.findByEmail(uniqueName).orElseGet(() ->
+                    _userRepository.findByUsername(uniqueName).orElseThrow(() -> new UsernameNotFoundException("User not found"))
+        );
         return user;
     }
 
