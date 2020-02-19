@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,6 +40,7 @@ public class UserService implements UserDetailsService {
         User user = _userRepository.findByEmail(uniqueName).orElseGet(() ->
                     _userRepository.findByUsername(uniqueName).orElseThrow(() -> new UsernameNotFoundException("User not found"))
         );
+        new AccountStatusUserDetailsChecker().check(user);
         return user;
     }
 
@@ -79,8 +81,8 @@ public class UserService implements UserDetailsService {
         if(!_validator.IdentificationNoIsValid(model.getIdentityNumber()))
             throw new Exception("Failed");
 
-        Role role = new Role(0, "USER", "System User", new Date());
-        Role role2 = new Role(0, "ADMIN", "System Admin", new Date());
+        Role role = new Role(0, "ROLE_USER", "System User", new Date());
+        Role role2 = new Role(0, "ROLE_ADMIN", "System Admin", new Date());
 
         List<Role> roles = Arrays.asList(role, role2);
 
