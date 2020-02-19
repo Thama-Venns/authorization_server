@@ -10,16 +10,19 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 
 @Configuration
 @EnableWebSecurity
-public class WebServerConfig extends WebSecurityConfigurerAdapter {
+public class AuthenticationServerConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired private UserDetailsService _userDetailsService;
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(_userDetailsService);
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(_userDetailsService)
+            .passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -27,7 +30,7 @@ public class WebServerConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
             .authorizeRequests()
             .antMatchers("/users**").hasAnyRole("USER", "ADMIN")
-            .antMatchers("/test", "/register").permitAll()
+            .antMatchers("/test", "/register", "/oauth/token").permitAll()
             .anyRequest().authenticated()
             .and().formLogin();
     }
@@ -38,7 +41,6 @@ public class WebServerConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
