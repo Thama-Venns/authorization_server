@@ -1,6 +1,5 @@
 package com.ntvspace.security.usecure.Controllers;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +18,7 @@ public class HomeController {
 
     @GetMapping("test")
     public String Test() {
-        return "Test resource";
+        return " Marvitzo Test resource";
     }
 
     @GetMapping
@@ -27,3 +26,5 @@ public class HomeController {
         return ResponseEntity.ok(principal);
     }
 }
+
+
