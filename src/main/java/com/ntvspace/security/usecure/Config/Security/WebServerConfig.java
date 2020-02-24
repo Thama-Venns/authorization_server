@@ -28,9 +28,9 @@ public class WebServerConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
             .authorizeRequests()
             .antMatchers("/users**").hasAnyRole("USER", "ADMIN")
-            .antMatchers("/test", "/register", "/oauth/token").permitAll()
+            .antMatchers("/login", "/register").permitAll()
             .anyRequest().authenticated()
-            .and().formLogin();
+            .and().formLogin().permitAll();
     }
 
     @Bean

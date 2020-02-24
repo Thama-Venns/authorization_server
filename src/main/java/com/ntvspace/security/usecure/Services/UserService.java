@@ -98,6 +98,10 @@ public class UserService implements UserDetailsService {
         return newUser;
     }
 
+    public void ForgotPassword(String email) {
+
+    }
+
     // Deletes a user
     public void DeleteUser(long uid) {
         User user = _userRepository.findById(uid).orElseThrow(() -> new UsernameNotFoundException("User not found"));
