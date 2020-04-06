@@ -1,13 +1,3 @@
-#spring.datasource.url=jdbc:mysql://localhost:3306/ntvspace
-#spring.datasource.username=root
-#spring.datasource.password=root
-#spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-#spring.jpa.hibernate.ddl-auto=update
-#spring.jpa.show-sql=true
-#spring.jpa.open-in-view=false
-#spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
-
-
 spring:
   datasource:
     url: jdbc:h2:file:C:/MyProjects/Antifragile/usecure/src/main/resources/data/usecure
@@ -16,22 +6,37 @@ spring:
     password: password
   jpa:
     show-sql: true
-    properties.hibernate.format_sql: true
-    hibernate.ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show-sql: true
+    hibernate:
+      ddl-auto: update
     database-platform: org.hibernate.dialect.H2Dialect
 
 security:
+  basic:
+    enabled: false
   oauth2:
     resource:
       token-info-uri: http://localhost:8080/oauth/check_token
-    client-id: client
-    client-secret: secret
+    client:
+      registration:
+        custom-google:
+          client-id: client
+          client-secret: secret
+      provider:
+        custom-google:
+          issuer-uri: http://localhost:8080
+#    client:
+#      client-id: client
+#      client-secret: secret
 
-logging:
-  level:
-    org:
-      hibernate:
-        type: trace
+#logging:
+#  level:
+#    org:
+#      hibernate:
+#        type: trace
 
 
 #spring.datasource.url=jdbc:sqlserver://ntvazure-db.database.windows.net:1433;databaseName=ntvspace;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;

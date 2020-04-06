@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -17,8 +19,11 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import javax.sql.DataSource;
+import java.security.KeyPair;
+import java.security.PublicKey;
 import java.util.Arrays;
 
 @Configuration
@@ -28,6 +33,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired private AuthenticationManager _authenticationManager;
     @Autowired private BCryptPasswordEncoder _passwordEncoder;
     @Autowired private DataSource _datasource;
+    //@Autowired private KeyPair keyPair;
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
@@ -38,14 +44,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("some-client")
-                .authorizedGrantTypes("implicit")
+                .withClient("client-app")
+                .secret(_passwordEncoder.encode("secret1"))
+                .authorizedGrantTypes("password", "implicit", "authorization_code", "refresh_token")
                 .scopes("read").autoApprove(true)
-                .and()
-                .withClient("client")
-                .secret(_passwordEncoder.encode("secret"))
-                .authorizedGrantTypes("password","authorization_code", "refresh_token")
-                .scopes("READ", "WRITE");
+                .accessTokenValiditySeconds(3600)
+                .redirectUris("https://localhost:5001/api/values");
     }
 
     @Override
@@ -64,6 +68,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      * Beans
      */
 
+    // Customized principal values to the token payload
     @Bean
     TokenEnhancer tokenEnhancer() {
         return new CustomTokenEnhancer();
@@ -76,8 +81,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
+        //KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("jwk.jks"), "password".toCharArray()).getKeyPair("jwk");
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey("123");
+        converter.setSigningKey("123");//.setKeyPair(keyPair);
         return converter;
     }
 

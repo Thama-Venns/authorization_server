@@ -18,7 +18,7 @@ public class HomeController {
 
     @GetMapping("test")
     public String Test() {
-        return " Marvitzo Test resource";
+        return " Venns Test resource";
     }
 
     @GetMapping

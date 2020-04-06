@@ -3,6 +3,7 @@ package com.ntvspace.security.usecure.Config.Security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,7 +29,7 @@ public class WebServerConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
             .authorizeRequests()
             .antMatchers("/users**").hasAnyRole("USER", "ADMIN")
-            .antMatchers("/login", "/register").permitAll()
+            .antMatchers("/login", "/register", "/.well-known/openid-configuration").permitAll()
             .anyRequest().authenticated()
             .and().formLogin().permitAll();
     }
